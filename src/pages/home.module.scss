@@ -1,1 +1,26 @@
-// TODO
+.contentContainer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 2rem;
+
+    .posts {
+        >div {
+            &+div {
+                margin-top: 3rem;
+            }
+        }
+    }
+}
+
+.button {
+    margin-top: 4rem;
+    color: var(--hightlight);
+    font-weight: 600;
+    border: 0;
+    background: transparent;
+    font-size: 1.125rem;
+}
+
+.logo {
+    margin: 4.972rem 0 4.051rem;
+}

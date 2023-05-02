@@ -1,1 +1,21 @@
-// TODO
+.container {
+    height: 105px;
+    max-width: 720px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--gray-700);
+    background: var(--gray-900);
+  }
+  
+  .content {
+    max-width: 1120px;
+    height: 105px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  
+    display: flex;
+    align-items: center;
+  
+    img {
+      cursor: pointer;
+    }
+  }
