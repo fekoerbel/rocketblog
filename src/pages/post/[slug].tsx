@@ -7,6 +7,7 @@ import { ptBR } from 'date-fns/locale';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import { RichText } from 'prismic-dom';
+import { PrismicRichText } from '@prismicio/react'
 import Head from 'next/head';
 
 interface Post {
@@ -30,38 +31,33 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post(post: Post) {
+export default function Post({ post }: PostProps) {
   function averageTime(arr = post.data.content) {
     var total = 0;
     for (let i = 0; i < arr.length; i++) {
       let heading = arr[i].heading;
       let body = arr[i].body;
 
-      // concatenar as strings de heading e body em uma única string
       let text = heading;
       for (let j = 0; j < body.length; j++) {
         text += " " + body[j].text;
       }
 
-      // remover todos os caracteres que não são letras ou espaços em branco
       let textClean = text.replace(/[^\w\s]/gi, '');
 
-      // dividir o text em palavras
       let words = textClean.split(/\s+/);
 
-      // exibir o número de words no console
-      console.log(`O objeto ${i + 1} tem ${words.length} palavras no total.`)
       total += words.length
     }
-    console.log(total)
+    return Math.ceil(total / 100)
   }
+  console.log(post.data.content)
 
   return (
     <>
       <Head>
         <title>{post.data.title} | ig.news</title>
       </Head>
-      {averageTime()}
       <main className={styles.container}>
         <article className={styles.post}>
           <img src={post.data.banner.url} alt={post.data.title} />
@@ -83,16 +79,15 @@ export default function Post(post: Post) {
               <div>
                 <FiUser /> {post.data.author}
               </div>
-              {/* <div>
-                <FiClock /> {tempRead} min
-              </div> */}
+              <div>
+                <FiClock /> {averageTime()} min
+              </div>
             </div>
 
             {post.data.content.map(contentBody => (
               <div key={contentBody.heading}>
-                <strong>{contentBody.heading}</strong>
+                <h2>{contentBody.heading}</h2>
                 <div
-                  // eslint-disable-next-line react/no-danger
                   dangerouslySetInnerHTML={{
                     __html: RichText.asHtml(contentBody.body),
                   }}
@@ -142,7 +137,9 @@ export const getStaticProps = async ({ params }) => {
     })
   }
   return {
-    props: post,
+    props: {
+      post
+    },
     revalidate: 60 * 30 // 30 min
   }
 };
