@@ -4,11 +4,10 @@ import { getPrismicClient } from '../../services/prismic';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import commonStyles from '../../styles/common.module.scss';
 import styles from './post.module.scss';
 import { RichText } from 'prismic-dom';
-import { PrismicRichText } from '@prismicio/react'
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 interface Post {
   first_publication_date: string | null;
@@ -32,6 +31,7 @@ interface PostProps {
 }
 
 export default function Post({ post }: PostProps) {
+  const router = useRouter();
   function averageTime(arr = post.data.content) {
     var total = 0;
     for (let i = 0; i < arr.length; i++) {
@@ -51,7 +51,11 @@ export default function Post({ post }: PostProps) {
     }
     return Math.ceil(total / 100)
   }
-  console.log(post.data.content)
+
+  if (router.isFallback) {
+    return <div>Carregando...</div>;
+  }
+
 
   return (
     <>
@@ -128,13 +132,7 @@ export const getStaticProps = async ({ params }) => {
       author: response.data.author,
       content: response.data.content
     },
-
     content: response.data.content,
-    updatedAt: new Date(response.last_publication_date).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    })
   }
   return {
     props: {
