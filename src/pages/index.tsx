@@ -101,7 +101,7 @@ export const getStaticProps = async () => {
   });
   const posts = postsResponse.results.map(post => {
     return {
-      slug: post.uid,
+      uid: post.uid,
       first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
