@@ -13,6 +13,7 @@ interface Post {
   first_publication_date: string | null;
   data: {
     title: string;
+    subtitle: string
     banner: {
       url: string;
     };
@@ -49,7 +50,7 @@ export default function Post({ post }: PostProps) {
 
       total += words.length
     }
-    return Math.ceil(total / 100)
+    return Math.ceil(total / 200)
   }
 
   if (router.isFallback) {
@@ -107,25 +108,32 @@ export default function Post({ post }: PostProps) {
 }
 
 export const getStaticPaths = async () => {
-  // const prismic = getPrismicClient({});
-  // const posts = await prismic.getByType('posts');
+  const prismic = getPrismicClient({});
+  const posts = await prismic.getByType('posts');
+  const postsPaths = posts.results.map(post => {
+    return {
+      params: {
+        slug: post.uid,
+      },
+    };
+  });
   return {
-    paths: [],
-    fallback: 'blocking'
+    paths: postsPaths,
+    fallback: true,
   }
-
-  // TODO
 };
 
 export const getStaticProps = async ({ params }) => {
   const slug = params?.slug
   const prismic = getPrismicClient({});
   const response = await prismic.getByUID('posts', String(slug), {});
-
+  console.log(response)
   const post = {
+    uid: response.uid,
     first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
       banner: {
         url: response.data.banner.url
       },
